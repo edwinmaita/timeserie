@@ -4,7 +4,7 @@ from pycaret.time_series import load_model, predict_model
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from datetime import timedelta
 
-# Configuración de la página en Streamlit
+# Configuración de la página en Streamlits
 st.set_page_config(page_title="Predicción de Cantidad de Tarjetas de Crèdito", layout="wide")
 
 # Título de la aplicación
