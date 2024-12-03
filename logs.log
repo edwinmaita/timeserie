@@ -1,0 +1,6 @@
+2024-11-16 15:24:45,419:WARNING:
+'prophet' is a soft dependency and not included in the pycaret installation. Please run: `pip install prophet` to install.
+2024-11-16 15:25:04,532:INFO:Initializing load_model()
+2024-11-16 15:25:04,537:INFO:load_model(model_name=datos_deploy/modelTesisTodo, platform=None, authentication=None, verbose=True)
+2024-11-16 15:25:09,660:INFO:Initializing load_model()
+2024-11-16 15:25:09,660:INFO:load_model(model_name=datos_deploy/modelTesisTodo, platform=None, authentication=None, verbose=True)
