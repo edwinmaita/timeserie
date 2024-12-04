@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from pycaret.time_series import load_model, predict_model
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from datetime import timedelta
 
 # Configuración de la página en Streamlits
@@ -24,22 +23,22 @@ if opcion == "DASHBOARD":
 
 elif opcion == "PREDICCIONES":
     # Título de la sección de predicciones
-
     st.subheader("Proyectar la cantidad de tarjetas")
+    
     # Selección de entidad financiera
     st.sidebar.header("Seleccione la Entidad Financiera")
-    entidad = st.sidebar.selectbox("Entidad Financiera", ["Todo", "Diners Club", "Banco del Pichincha"])
+    entidad = st.sidebar.selectbox("Entidad Financiera", ["Todo", "Diners Club", "Produbanco"])
 
     # Cargar el modelo y los datos correspondientes según la selección
     if entidad == "Todo":
-        modelo_path = 'datos_deploy/modelTesisTodo'
-        datos_path = 'datos_deploy/DatosActualesTesisTodo.csv'
+        modelo_path = 'datos_deploy/modelTesis_Todo'
+        datos_path = 'datos_deploy/Datos_Todo.csv'
     elif entidad == "Diners Club":
-        modelo_path = 'datos_deploy/modelTesisDinersClub'
-        datos_path = 'datos_deploy/DatosActualesTesisDinersClub.csv'
-    elif entidad == "Banco del Pichincha":
-        modelo_path = 'datos_deploy/modelTesisBancoPichincha'
-        datos_path = 'datos_deploy/DatosActualesTesisBancoPichincha.csv'
+        modelo_path = 'datos_deploy/modelTesis_Diners Club'
+        datos_path = 'datos_deploy/Datos_Diners Club.csv'
+    elif entidad == "Produbanco":
+        modelo_path = 'datos_deploy/modelTesis_Produbanco'
+        datos_path = 'datos_deploy/Datos_Produbanco.csv'
 
     # Cargar el modelo seleccionado
     try:
@@ -66,27 +65,18 @@ elif opcion == "PREDICCIONES":
             # Realizar la predicción con el modelo cargado
             prediccion = predict_model(modelo, fh=periodos_prediccion)
             
-            # Generar índice futuro para las predicciones
-            prediccion.index = pd.date_range(start=data.index[-1] + timedelta(days=1), periods=periodos_prediccion, freq='M')
+            # Renombrar la columna 'y_pred' a 'Predicción'
+            prediccion.rename(columns={'y_pred': 'Predicción'}, inplace=True)
             
-            # Calcular las métricas
-            valores_reales = data[-periodos_prediccion:]['Total']  # Ajusta 'Total' al nombre de la columna correcta si es diferente
-            prediccion_valores = prediccion['y_pred'].values  # Ajusta 'y_pred' si es necesario
-
-            mse = mean_squared_error(valores_reales, prediccion_valores)
-            rmse = mse ** 0.5
-            mae = mean_absolute_error(valores_reales, prediccion_valores)
-            r2 = r2_score(valores_reales, prediccion_valores)
-
-            # Mostrar las métricas de evaluación
-            st.subheader("Métricas de Evaluación")
-            st.write(f"MSE: {mse:.2f}")
-            st.write(f"RMSE: {rmse:.2f}")
-            st.write(f"MAE: {mae:.2f}")
-            st.write(f"R²: {r2:.2f}")
+            # Generar índice futuro para las predicciones, asegurándose de que las fechas sean el primer día de cada mes
+            prediccion.index = pd.date_range(start=data.index[-1] + timedelta(days=1), periods=periodos_prediccion, freq='MS')  # 'MS' es Month Start
+            
+            # Mostrar la tabla con los valores predichos
+            st.subheader("Valores Predichos")
+            st.write(prediccion[['Predicción']])  # Mostrar solo las predicciones con la nueva etiqueta
 
             # Concatenar los datos históricos y las predicciones para visualización
-            data_completa = pd.concat([data, prediccion], axis=0)
+            data_completa = pd.concat([data, prediccion[['Predicción']]], axis=0)
             
             # Mostrar las predicciones y los datos históricos juntos
             st.subheader("Predicciones y Datos de Entrenamiento")
