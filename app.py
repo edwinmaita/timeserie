@@ -84,3 +84,10 @@ elif opcion == "PREDICCIONES":
 
         except Exception as e:
             st.error(f"Ha ocurrido un error durante la predicción: {e}")
+# Sección de autor
+st.markdown("""
+    ---
+    **Autor:** Edwin Maita 2024  xavimait@espol.edu.ec
+    *Desarrollador de la solución de predicción de cantidad de tarjetas de crédito.*  
+    Esta aplicación utiliza modelos de predicción para proyectar la cantidad de tarjetas de crédito en diferentes entidades financieras.
+""")
